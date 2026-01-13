@@ -6,7 +6,7 @@ CREATE TYPE unit_enum AS ENUM ('second', 'minute', 'hour', 'day', 'week', 'month
 -- We can set the minimum and maximum period, price per period type...
 -- These periods can be named and used with many different inventories.
 CREATE TABLE period (
-    id serial not null primary key,
+    id uuid not null DEFAULT uuidv7() primary key,
     label varchar not null,
     -- XXX: Should min/max_value be in a different table?
     min_value int not null,

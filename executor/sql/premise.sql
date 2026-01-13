@@ -1,5 +1,5 @@
 CREATE TABLE premise (
-  id uuid primary key not null default uuidv4(),
+  id uuid primary key not null default uuidv7(),
   name varchar not null,
   description varchar not null,
   updated_at timestamp not null default now()
@@ -8,7 +8,7 @@ CREATE TABLE premise (
 INSERT INTO premise (name, description) VALUES ('Example Premise', 'An example premise');
 
 CREATE TABLE premise_route (
-  premise_id uuid,
+  premise_id uuid not null default uuidv7(),
   route_root varchar not null unique,
   FOREIGN KEY (premise_id) REFERENCES premise(id)
 );

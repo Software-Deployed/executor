@@ -19,6 +19,7 @@ depends: [
   "reason-react-ppx"
   "reason-react"
   "reason-react-day-picker"
+  "server-reason-react"
   "odoc" {with-doc}
 ]
 build: [

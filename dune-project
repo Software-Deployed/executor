@@ -14,6 +14,11 @@
 (using melange 0.1)
 
 (pin
+ (url "git+https://github.com/ml-in-barcelona/server-reason-react.git")
+ (package
+  (name server-reason-react)))
+
+(pin
  (url "git+https://github.com/reasonml/reason-react.git")
  (package
   (name reason-react)))
@@ -43,7 +48,8 @@
   ppxlib
   reason-react-ppx
   reason-react
-  reason-react-day-picker)
+  reason-react-day-picker
+  server-reason-react)
  (allow_empty)
  (tags
   ("web" "commerce" "lease" "subscription" "cart")))

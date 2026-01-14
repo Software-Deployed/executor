@@ -58,17 +58,17 @@ let make =
           <span className="align-middle text-lg pl-14">
             "Select your reservation start time: "->str
           </span>
-          <DayPicker
+          <ReactDayPicker
             mode="range"
             selected={
                        `Range({
-                         DayPicker.from: Js.Nullable.return(openDate),
-                         DayPicker.to_: Js.Nullable.return(closeDate),
+                         ReactDayPicker.from: Js.Nullable.return(openDate),
+                         ReactDayPicker.to_: Js.Nullable.return(closeDate),
                        })
                      }
             onSelect={
                        `Range(
-                         (dates: DayPicker.rangeDate) => {
+                         (dates: ReactDayPicker.rangeDate) => {
                            let openDate =
                              switch (dates.from->Js.Nullable.toOption) {
                              | Some(date) => date

@@ -3,16 +3,15 @@
  (public_name executor)
  (wrapped false)
  (preprocess
-  (pps melange.ppx reason-react-ppx))
+  (pps server-reason-react.ppx))
  (libraries
+  server-reason-react.react
+  server-reason-react.reactDom
   reason-react-day-picker
   ui
   common
-  melange.belt
-  melange-webapi
   reason-react
-  melange.dom
-  melange.js)
- (modes melange))
+  lwt)
+ (modes native))
 
 (include_subdirs qualified)

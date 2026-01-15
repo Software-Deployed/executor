@@ -1,19 +1,8 @@
-(melange.emit
- (runtime_deps ui/index.html ui/src/style.css ui/src/tailwind.css)
- (package executor)
- (promote (until-clean))
- (target lib)
- (libraries executor ui common)
- (module_systems
-  (es6 mjs))
- (preprocess
-  (pps melange.ppx)))
-
 (rule
- (alias melange-post-build)
+ (alias executor-post-build)
  (deps
   (source_tree executor/src)
   (source_tree ui/src)
   (source_tree common/src))
  (action
-  (system "bun ../../build.js")))
+  (system "bun build.js")))

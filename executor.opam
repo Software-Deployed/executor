@@ -10,6 +10,8 @@ bug-reports: "https://github.com/Software-Deployed/executor/issues"
 depends: [
   "dune" {>= "3.20"}
   "ocaml" {= "5.4.0"}
+  "dream"
+  "lwt"
   "melange"
   "ocaml-lsp-server"
   "ocamlformat"

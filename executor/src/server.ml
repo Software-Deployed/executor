@@ -1,9 +1,4 @@
-open Opium
 open Lwt.Syntax
-
-module ReactDOMServer = struct
-  external renderToStream : React.element -> (Lwt_stream.t(string) * (unit -> unit)) = "renderToStream" [@@mel.module "react-dom/server"]
-end
 
 let doc_root = Sys.getenv_opt "DOC_ROOT" |> Option.value ~default:"./"
 
@@ -29,7 +24,7 @@ let render_app_html ~pathname ~html_placeholder ~initial_state =
     ({|<script>window.__EXECUTOR_CONFIG__=|} ^ state_json ^ {|;</script></body>|})
 
 let get_config premise_id =
-  let* premise = Database.Premise.get_promise premise_id in
+  let* premise = Database.Premise.get_premise premise_id in
   let* inventory = Database.Inventory.get_list premise_id in
   let response = Config.{
     inventory = inventory;
@@ -45,21 +40,22 @@ let stream_react_app response_stream react_element =
   ) stream in
   Lwt.return ()
 
-let handle_frontend req =
-  let pathname = target req in
-  let* index_html = Lwt_io.with_file (doc_root ^ "/ui/index.html") Lwt_io.read in
+let handle_frontend route_root =
+  let%lwt index_html = Lwt_io.with_file Lwt_io.Input (doc_root ^ "/ui/index.html") in
   let initial_state = `Assoc [] in (* Build from actual state *)
-  let html = render_app_html ~pathname ~html_placeholder:"<!--app-html-->" ~initial_state in
+  let html = render_app_html ~pathname:route_root ~html_placeholder:"<!--app-html-->" ~initial_state in
   Dream.respond ~headers:["Content-Type", "text/html"] html
 
-let handle_config premise_id =
-  let* config = get_config premise_id in
+(*let handle_config premise_id =
+ let%lwt config = get_config premise_id in
   let json = Config.{
     inventory = config.inventory;
     premise = config.premise;
   } |> Yojson.Safe.to_string in
   Dream.respond ~headers:["Content-Type", "application/json"] json
+  *)
 
+(*
 let websocket_handler req ws =
   let open Dream_websocket in
   let state = ref (Some ws) in
@@ -82,14 +78,30 @@ let websocket_handler req ws =
   in
   let finally () = state := None in
   Dream_websocket.websocket ~finally receive
+*)
 
-let () = 
-  App.empty
-  |> App.port 8899
-  |> Dream_websocket.websocket_path "/ws" websocket_handler
-  |> get "/" handle_frontend
-  |> get "/config/:premise_id" (fun req ->
-    let premise_id = param "premise_id" req in
+ let () =
+  Dream.run ~port:8899
+  @@ Dream.logger
+  @@ Dream.router [ 
+  (*
+  |> Dream.get "/ws" websocket_handler  
+(fun _ ->
+        Dream.websocket (fun websocket ->
+          match%lwt Dream.receive websocket with
+          | Some "Hello?" ->
+            Dream.send websocket "Good-bye!"
+          | _ ->
+            Dream.close_websocket websocket));  |> Dream.get "/" handle_frontend
+          *)
+  Dream.get "/" (fun _req ->
+    let route_root = "/" in
+    handle_frontend route_root
+  );
+  (*
+  Dream.get "/config/:premise_id" (fun req ->
+    let premise_id = Dream.param req "premise_id" in
     handle_config premise_id
   )
-  |> Dream.run ~interface:"0.0.0.0"
+  *)
+];

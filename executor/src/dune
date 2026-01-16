@@ -2,16 +2,25 @@
  (name executor)
  (public_name executor)
  (wrapped false)
- (preprocess
-  (pps server-reason-react.ppx))
  (libraries
+  common
+  dream
+  server-reason-react.url_native
   server-reason-react.react
   server-reason-react.reactDom
-  reason-react-day-picker
-  ui
-  common
-  reason-react
-  lwt)
+  server-reason-react.html
+  server-reason-react.js
+  lwt.unix
+  str
+  unix
+  server-reason-react.belt
+  yojson)
+ (preprocess
+  (pps
+   server-reason-react.ppx
+   server-reason-react.melange_ppx
+   melange-json-native.ppx
+   lwt_ppx))
  (modes native))
 
 (include_subdirs qualified)

@@ -40,6 +40,8 @@
  (depends
   (ocaml
    (= "5.4.0"))
+  dream
+  lwt
   melange
   ocaml-lsp-server
   ocamlformat

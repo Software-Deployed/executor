@@ -13,7 +13,7 @@
   reason-react
   melange.dom
   melange.js)
- (modes melange))
+ (modes native melange))
 
 (include_subdirs qualified)
 

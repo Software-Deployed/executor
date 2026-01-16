@@ -1,0 +1,95 @@
+open Opium
+open Lwt.Syntax
+
+module ReactDOMServer = struct
+  external renderToStream : React.element -> (Lwt_stream.t(string) * (unit -> unit)) = "renderToStream" [@@mel.module "react-dom/server"]
+end
+
+let doc_root = Sys.getenv_opt "DOC_ROOT" |> Option.value ~default:"./"
+
+module Config = struct
+  type inventory_item = {
+    id: string;
+    name: string;
+    price: float;
+  }
+
+  type output = {
+    inventory: inventory_item array;
+    premise: PeriodList.premise option;
+  }
+end
+
+let render_app_html ~pathname ~html_placeholder ~initial_state =
+  let config = EntryServer.render pathname in
+  let app_html = config.html in
+  let state_json = Yojson.Safe.to_string initial_state in
+  String.replace ~pattern:html_placeholder ~with_:app_html
+  @@ String.replace ~pattern:"</body>" ~with_:
+    ({|<script>window.__EXECUTOR_CONFIG__=|} ^ state_json ^ {|;</script></body>|})
+
+let get_config premise_id =
+  let* premise = Database.Premise.get_promise premise_id in
+  let* inventory = Database.Inventory.get_list premise_id in
+  let response = Config.{
+    inventory = inventory;
+    premise = premise;
+  } in
+  Lwt.return response
+
+let stream_react_app response_stream react_element =
+  let stream, _abort = ReactDOMServer.renderToStream react_element in
+  let* () = Lwt_stream.iter_s (fun chunk ->
+    let* () = Dream.write response_stream chunk in
+    Dream.flush response_stream
+  ) stream in
+  Lwt.return ()
+
+let handle_frontend req =
+  let pathname = target req in
+  let* index_html = Lwt_io.with_file (doc_root ^ "/ui/index.html") Lwt_io.read in
+  let initial_state = `Assoc [] in (* Build from actual state *)
+  let html = render_app_html ~pathname ~html_placeholder:"<!--app-html-->" ~initial_state in
+  Dream.respond ~headers:["Content-Type", "text/html"] html
+
+let handle_config premise_id =
+  let* config = get_config premise_id in
+  let json = Config.{
+    inventory = config.inventory;
+    premise = config.premise;
+  } |> Yojson.Safe.to_string in
+  Dream.respond ~headers:["Content-Type", "application/json"] json
+
+let websocket_handler req ws =
+  let open Dream_websocket in
+  let state = ref (Some ws) in
+  let send msg = match !state with
+    | Some ws -> send ws msg
+    | None -> ()
+  in
+  let receive msg = match msg with
+    | "ping" -> send "pong"
+    | msg when String.starts_with ~prefix:"select " msg ->
+      let premise_id = String.sub 7 (String.length msg - 7) |> String.trim in
+      Database.Bus.with_listener premise_id
+        ~on_message:(fun _message ->
+          let* config = get_config premise_id in
+          let json = Yojson.Safe.to_string config in
+          send json
+        );
+      ()
+    | _ -> ()
+  in
+  let finally () = state := None in
+  Dream_websocket.websocket ~finally receive
+
+let () = 
+  App.empty
+  |> App.port 8899
+  |> Dream_websocket.websocket_path "/ws" websocket_handler
+  |> get "/" handle_frontend
+  |> get "/config/:premise_id" (fun req ->
+    let premise_id = param "premise_id" req in
+    handle_config premise_id
+  )
+  |> Dream.run ~interface:"0.0.0.0"

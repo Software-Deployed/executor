@@ -4,11 +4,15 @@
  (wrapped false)
  (preprocess
   (pps
-   server-reason-react.ppx -melange server-reason-react.browser_ppx -js melange.ppx reason-react-ppx))
+   server-reason-react.ppx
+   -melange
+   server-reason-react.browser_ppx
+   -js
+   melange.ppx
+   reason-react-ppx))
  (libraries
   reason-react-day-picker
-  tilia
-  common
+  common_js
   melange.belt
   melange-webapi
   reason-react

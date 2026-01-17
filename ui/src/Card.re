@@ -1,5 +1,3 @@
-open Css.Cx;
-
 [@react.component]
 let make = (~children, ~className: option(string)=?) => {
   <div
@@ -11,7 +9,7 @@ let make = (~children, ~className: option(string)=?) => {
         | None => ""
         },
       |]
-      ->cx
+      ->Cx.cx
     }>
     children
   </div>;

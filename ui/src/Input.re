@@ -1,4 +1,3 @@
-open Common;
 type input_premise = {
   id: string,
   name: string,

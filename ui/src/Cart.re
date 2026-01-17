@@ -1,4 +1,3 @@
-open Common;
 open Tilia.React;
 
 let str = React.string;
@@ -6,15 +5,15 @@ let str = React.string;
 [@react.component]
 let make =
   leaf(() => {
-    let main_store = State.Store.getStore();
+    let main_store = Store.getStore();
     let config: Config.t = main_store.config;
-    let cart = State.Store.CartStore.state;
+    let cart = Store.CartStore.state;
     let count = cart.items->Js.Dict.keys->Array.length;
     let _items = config.inventory;
 
     <h1 className="block font-bold align-middle text-gray-700 m-2 text-3xl">
       <span className="m-2 align-middle text-3xl font-light">
-        <Ui.Icon.Cart size=24 />
+        /*<Icon.CartIcon size=24 />*/ React.null
       </span>
       {str("Selected equipment (")}
       {str(Int.to_string(count))}

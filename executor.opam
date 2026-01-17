@@ -8,7 +8,7 @@ tags: ["web" "commerce" "lease" "subscription" "cart"]
 homepage: "https://github.com/Software-Deployed/executor"
 bug-reports: "https://github.com/Software-Deployed/executor/issues"
 depends: [
-  "dune" {>= "3.20"}
+  "dune" {>= "3.21"}
   "ocaml" {= "5.4.0"}
   "dream"
   "lwt"

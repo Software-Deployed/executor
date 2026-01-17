@@ -3,48 +3,47 @@ open Lwt.Syntax
 let doc_root = Sys.getenv_opt "DOC_ROOT" |> Option.value ~default:"./"
 
 module Config = struct
-  type inventory_item = {
-    id: string;
-    name: string;
-    price: float;
-  }
+  type inventory_item = { id : string; name : string; price : float }
 
   type output = {
-    inventory: inventory_item array;
-    premise: PeriodList.premise option;
+    inventory : inventory_item array;
+    premise : PeriodList.Premise.t option;
   }
 end
 
 let render_app_html ~pathname ~html_placeholder ~initial_state =
-  let config = EntryServer.render pathname in
-  let app_html = config.html in
-  let state_json = Yojson.Safe.to_string initial_state in
-  String.replace ~pattern:html_placeholder ~with_:app_html
-  @@ String.replace ~pattern:"</body>" ~with_:
-    ({|<script>window.__EXECUTOR_CONFIG__=|} ^ state_json ^ {|;</script></body>|})
+  EntryServer.render pathname
 
+(*
 let get_config premise_id =
   let* premise = Database.Premise.get_premise premise_id in
   let* inventory = Database.Inventory.get_list premise_id in
-  let response = Config.{
-    inventory = inventory;
-    premise = premise;
-  } in
+  let response = Config.{ inventory; premise } in
   Lwt.return response
+*)
 
 let stream_react_app response_stream react_element =
-  let stream, _abort = ReactDOMServer.renderToStream react_element in
-  let* () = Lwt_stream.iter_s (fun chunk ->
-    let* () = Dream.write response_stream chunk in
-    Dream.flush response_stream
-  ) stream in
+  let stream, _abort = ReactDOM.renderToStream react_element in
+  let* () =
+    Lwt_stream.iter_s
+      (fun chunk ->
+        let* () = Dream.write response_stream chunk in
+        Dream.flush response_stream)
+      stream
+  in
   Lwt.return ()
 
 let handle_frontend route_root =
-  let%lwt index_html = Lwt_io.with_file Lwt_io.Input (doc_root ^ "/ui/index.html") in
-  let initial_state = `Assoc [] in (* Build from actual state *)
-  let html = render_app_html ~pathname:route_root ~html_placeholder:"<!--app-html-->" ~initial_state in
-  Dream.respond ~headers:["Content-Type", "text/html"] html
+  let%lwt index_html =
+    Lwt_io.with_file Lwt_io.Input (doc_root ^ "/ui/index.html")
+  in
+  let initial_state = `Assoc [] in
+  (* Build from actual state *)
+  let html =
+    render_app_html ~pathname:route_root ~html_placeholder:"<!--app-html-->"
+      ~initial_state
+  in
+  Dream.respond ~headers:[ ("Content-Type", "text/html") ] html
 
 (*let handle_config premise_id =
  let%lwt config = get_config premise_id in
@@ -80,11 +79,11 @@ let websocket_handler req ws =
   Dream_websocket.websocket ~finally receive
 *)
 
- let () =
-  Dream.run ~port:8899
-  @@ Dream.logger
-  @@ Dream.router [ 
-  (*
+let () =
+  Dream.run ~port:8899 @@ Dream.logger
+  @@ Dream.router
+       [
+         (*
   |> Dream.get "/ws" websocket_handler  
 (fun _ ->
         Dream.websocket (fun websocket ->
@@ -94,14 +93,13 @@ let websocket_handler req ws =
           | _ ->
             Dream.close_websocket websocket));  |> Dream.get "/" handle_frontend
           *)
-  Dream.get "/" (fun _req ->
-    let route_root = "/" in
-    handle_frontend route_root
-  );
-  (*
+         Dream.get "/" (fun _req ->
+             let route_root = "/" in
+             handle_frontend route_root);
+         (*
   Dream.get "/config/:premise_id" (fun req ->
     let premise_id = Dream.param req "premise_id" in
     handle_config premise_id
   )
   *)
-];
+       ]

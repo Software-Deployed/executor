@@ -1,4 +1,3 @@
-open Common;
 [@react.component]
 let make = (~period_list: Config.Pricing.period_list) => {
   let format_price = (p: int) => {

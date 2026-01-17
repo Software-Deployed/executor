@@ -1,6 +1,3 @@
-open Common;
-open Tilia;
-
 module Reservation = {
   type t = {
     // Date of the reservation
@@ -26,7 +23,11 @@ module CartStore = {
   // For now make is a stub that returns an empty cart. This will eventually restore the user's previous cart.
   // A feature I would really like to have is real time cart sharing. Use cases include: group ordering, third party cart payment, etc.
 
-  let state = Tilia.make({ items: Js.Dict.fromArray([||]) });
+  let state =
+    switch%platform (Runtime.platform) {
+    | Server => { items: Js.Dict.fromArray([||]) }
+    | Client => Tilia.Core.make({ items: Js.Dict.fromArray([||]) })
+    };
   let add_to_cart = (item: Config.InventoryItem.t) => {
     let cart_item =
       switch (state.items->Js.Dict.get(item.id->Int.to_string)) {
@@ -62,27 +63,27 @@ let derivePremiseId = (config: Config.t) => {
 
 let derivePeriodList = (config: Config.t) => {
   let inventory = config.inventory->Belt.Array.copy;
-  let seen = Js.Set.make();
+  let seen = [||];
   let periods: array(Config.Pricing.period) = [||];
-  inventory->Js.Array.forEach(~f=inv => {
+  inventory->Belt.Array.forEach(inv => {
     inv.period_list
-    |> Js.Array.forEach(~f=(pl: Config.Pricing.period) =>
-         if (seen->Js.Set.has(~value=pl.unit) === false) {
-           periods->Js.Array.push(~value=pl) |> ignore;
-           seen->Js.Set.add(~value=pl.unit) |> ignore;
-         }
-       )
+    ->Belt.Array.forEach((pl: Config.Pricing.period) =>
+        if (seen->Belt.Array.some(u => u == pl.unit)) {
+          periods->Belt.Array.push(pl) |> ignore;
+          seen->Belt.Array.push(pl.unit) |> ignore;
+        }
+      )
   });
   periods;
 };
 
-let makeStore = initialExecutorConfig =>
-  carve(({ derived }) => {
+let%browser_only makeStore = initialExecutorConfig =>
+  Tilia.Core.carve(({ derived }) => {
     {
       premise_id: derived(store => store->deriveConfig->derivePremiseId),
       config: initialExecutorConfig,
       period_list: derived(store => store->deriveConfig->derivePeriodList),
-      unit: PeriodList.Unit.signal->lift,
+      unit: PeriodList.Unit.defaultState /*PeriodList.Unit.signal->lift,*/
     }
   });
 
@@ -95,9 +96,9 @@ let getStore = () =>
   switch%platform (Runtime.platform) {
   | Client => makeStore(PremiseContainer.state)
   | Server => {
-      premise_id: deriveConfig(PremiseContainer.empty),
+      premise_id: "",
       config: PremiseContainer.empty,
-      period_list: derivePeriodList(PremiseContainer.empty),
+      period_list: [||],
       unit: PeriodList.Unit.defaultState,
     }
   };

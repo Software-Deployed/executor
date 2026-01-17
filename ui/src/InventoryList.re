@@ -1,26 +1,27 @@
-open Common;
 open Tilia.React;
-open Ui;
-
 let str = React.string;
 
 [@react.component]
 let make =
   leaf((~openDate: option(Js.Date.t)=?, ~closeDate: option(Js.Date.t)=?) => {
-    let main_store = State.Store.getStore();
+    let main_store = Store.getStore();
     let config: Config.t = main_store.config;
     let unit: PeriodList.Unit.t = main_store.unit;
     let items = config.inventory;
     let filterType = "all";
     let today =
-      Js.Date.make()
-      |> Js.Date.setHours(
-           ~hours=0.0,
-           ~minutes=0.0,
-           ~seconds=0.0,
-           ~milliseconds=0.0,
-         )
-      |> Js.Date.fromFloat;
+      switch%platform (Runtime.platform) {
+      | Server => Js.Date.make() |> Js.Date.setHours(0.0) |> Js.Date.fromFloat
+      | Client =>
+        Js.Date.make()
+        |> Js.Date.setHours(
+             ~hours=0.0,
+             ~minutes=0.0,
+             ~seconds=0.0,
+             ~milliseconds=0.0,
+           )
+        |> Js.Date.fromFloat
+      };
     let openDate =
       switch (openDate) {
       | Some(date) => date
@@ -61,10 +62,10 @@ let make =
     <Card
       className="m-0 p-0 bg-white/30 border-2 border-b-4 border-r-4 border-gray-200/60">
       <h1 className="block align-middle text-lg content-center">
-        <Icon.SearchIcon
-          size=48
-          className="text-slate-400 mr-2 my-auto inline content-start"
-        />
+        /*<Icon.SearchIcon
+            size=48
+            className="text-slate-400 mr-2 my-auto inline content-start"
+          />*/ React.null
         <span className="align-middle"> heading->str </span>
       </h1>
       <Card

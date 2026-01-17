@@ -1,4 +1,3 @@
-open Common;
 open Tilia.React;
 
 let str = React.string;
@@ -6,7 +5,15 @@ let str = React.string;
 [@react.component]
 let make =
   leaf(() => {
-    let main_store = State.Store.getStore();
+    let main_store = Store.getStore();
+    let%browser_only select_unit = (period: Config.Pricing.period, e) => {
+      let inputEl = e->React.Event.Form.currentTarget;
+      if (inputEl##checked == true) {
+        PeriodList.Unit.set(
+          PeriodList.Unit.tFromJs(period.unit)->Option.get,
+        );
+      };
+    };
     <div className="my-auto">
       {main_store.period_list
        |> Array.map((period: Config.Pricing.period) =>
@@ -20,14 +27,7 @@ let make =
                 name="type"
                 type_="radio"
                 value="hour"
-                onChange={e => {
-                  let inputEl = e->React.Event.Form.currentTarget;
-                  if (inputEl##checked == true) {
-                    PeriodList.Unit.set(
-                      PeriodList.Unit.tFromJs(period.unit)->Option.get,
-                    );
-                  };
-                }}
+                onChange={select_unit(period)}
                 checked={
                   main_store.unit
                   == PeriodList.Unit.tFromJs(period.unit)->Option.get

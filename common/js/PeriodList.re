@@ -1,12 +1,3 @@
-module Premise = {
-  type t = {
-    id: string,
-    name: string,
-    description: string,
-    updated_at: Js.Date.t,
-  };
-};
-
 module Unit = {
   [@deriving jsConverter]
   type t = [
@@ -20,5 +11,15 @@ module Unit = {
   ];
   // XXX: This default state should come from the server
   let defaultState: t = `Month;
-  let (signal, set) = Tilia.signal(defaultState);
+  let set = (_unit: t) => ();
+  //let (signal, set) = Tilia.signal(defaultState);
+};
+
+module Premise = {
+  type t = {
+    id: string,
+    name: string,
+    description: string,
+    updated_at: Js.Date.t,
+  };
 };

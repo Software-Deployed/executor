@@ -1,5 +1,3 @@
-open Common;
-
 let getActiveId = (url: ReasonReactRouter.url) => {
   switch (url.path) {
   | ["item", id, _] => Some(id)
@@ -14,7 +12,6 @@ let getRootlessPath = (route_root, path) =>
     let route_root_prefix = route_root |> String.split_on_char('/');
     //->Array.filter(value => value->String.length > 0)
     let root_idx = route_root_prefix->List.length - 1->Int.min(0);
-    Js.log(root_idx);
 
     let rootless_path =
       switch (path->Belt.List.splitAt(root_idx)) {
@@ -39,7 +36,7 @@ let make =
     // Cleanup function to unsubscribe when the component unmounts
     Some(() => ReasonReactRouter.unwatchUrl(watcher_id));
   });
-  let main_store = State.Store.getStore();
+  let main_store = Store.getStore();
   switch (main_store.config.premise) {
   | None => <NotFound />
   | Some(_) =>
@@ -48,7 +45,6 @@ let make =
       | Some(route_root) => getRootlessPath(route_root, url.path)
       | None => Some([""])
       };
-    Js.log(rootless_path);
     switch (rootless_path) {
     | Some(["item", _])
     | Some([""]) => <Landing />

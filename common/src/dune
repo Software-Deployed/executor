@@ -3,7 +3,7 @@
  (public_name executor.common)
  (wrapped true)
  (preprocess
-  (pps melange.ppx reason-react-ppx))
+  (pps server-reason-react.ppx -melange server-reason-react.browser_ppx -js melange.ppx reason-react-ppx))
  (libraries tilia melange.belt melange-webapi reason-react melange.dom melange.js)
  (modes melange))
 

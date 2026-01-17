@@ -3,7 +3,8 @@
  (public_name executor.ui)
  (wrapped false)
  (preprocess
-  (pps melange.ppx reason-react-ppx))
+  (pps
+   server-reason-react.ppx -melange server-reason-react.browser_ppx -js melange.ppx reason-react-ppx))
  (libraries
   reason-react-day-picker
   tilia
@@ -13,7 +14,7 @@
   reason-react
   melange.dom
   melange.js)
- (modes native melange))
+ (modes melange))
 
 (include_subdirs qualified)
 

@@ -21,11 +21,11 @@ let make = (~period_list: Config.Pricing.period_list) => {
        });
 
   <div
-    className="w-full rounded-lg border-1 border-slate-200/50 grid grid-cols-2 bg-white">
-    <div className="border-1 border-slate-200/50 bg-black/30 text-white p-1">
+    className="w-full rounded-lg border border-slate-200/50 grid grid-cols-2 bg-white">
+    <div className="border border-slate-200/50 bg-black/30 text-white p-1">
       <p className="font-bold text-left"> "Unit"->React.string </p>
     </div>
-    <div className="border-1 border-slate-200/50 bg-black/30 text-white p-1">
+    <div className="border border-slate-200/50 bg-black/30 text-white p-1">
       <p className="font-bold text-left"> "Price"->React.string </p>
     </div>
     {list_items |> React.array}

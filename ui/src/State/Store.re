@@ -79,16 +79,16 @@ let derivePeriodList = (config: Config.t) => {
 let makeStore = initialExecutorConfig =>
   carve(({ derived }) => {
     {
-      premise_id: derived(deriveConfig |> derivePremiseId),
+      premise_id: derived((store) => store->deriveConfig->derivePremiseId),
       config: initialExecutorConfig,
-      period_list: derived(deriveConfig |> derivePeriodList),
+      period_list: derived((store) => store->deriveConfig->derivePeriodList),
       unit: PeriodList.Unit.signal->lift,
     }
   });
 
 let makeServerStore = () => PremiseContainer.empty;
 
-// This store needs to be isomorphic so that it's in the context of the user's session on the server
+// This store needs to isomorphic so that it's in the context of the user's session on the server
 // There may be a better way to do this, but for now I make main_store an option.
 // Then I use getStore in my components to get the store based on the execution context.
 let main_store: option(t) =

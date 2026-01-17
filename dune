@@ -1,7 +1,0 @@
-(rule
- (alias executor-post-build)
- (deps
-  (source_tree ui/src)
-  (source_tree common/src))
- (action
-  (system "bun build.js")))

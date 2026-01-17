@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-   "dev:serve": "bun dist/Server.js",
-   "dev": "pnpm run \"/(.*:watch$|^dev:serve$)/\"",
+   "dev:serve": "dune exec server.exe",
+   "dev": "pnpm dune:watch # \"/(.*:watch$|^dev:serve$)/\"",
    "dune:watch": "/bin/zsh -i -c 'dune build -w'",
-   "bun:watch": "bun --hot build.js",
    "watch": "pnpm run \"/.*:watch$/\""
   },
   "keywords": [],

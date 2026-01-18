@@ -1,7 +1,7 @@
-(library
- (name ui)
- (public_name executor.ui)
- (wrapped false)
+(melange.emit
+ (module_systems
+  (es6 "re.js"))
+ (target app)
  (preprocess
   (pps
    server-reason-react.ppx
@@ -17,18 +17,27 @@
   melange-webapi
   reason-react
   melange.dom
-  melange.js)
- (modes melange))
+  melange.js))
+
+(rule
+ (alias app)
+ (deps
+  (package executor)
+  (alias_rec melange)
+  (:script ../build.mjs)
+  (:entrypoints app/ui/src/App.re.js)
+  (:document app/ui/src/Document.re.js)
+  (source_tree ../node_modules)
+  (file ../package.json)
+  (source_tree ../../_opam/lib/server-reason-react/esbuild-plugin))
+ (action
+  (run
+   node
+   %{script}
+   %{entrypoints}
+   %{document}
+   --output=client
+   --extract=true
+   --env=%{env:DEMO_ENV='production'})))
 
 (include_subdirs qualified)
-
-(install
- ; This tells `dune` where to install the tailwind executable
- ; "sections" are predefined installation locations within a package (like `bin` for executables, `lib` for libraries, `share` for data files and `docs`)
- (section lib)
- ; Replace this with your package name
- (package executor)
- ; Make the tailwind CLI available as an executable called "tailwind"
- ; by copying it from node_modules to the install directory
- (files
-  ("./tailwind.css" as tailwind.css)))

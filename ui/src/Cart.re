@@ -13,7 +13,7 @@ let make =
 
     <h1 className="block font-bold align-middle text-gray-700 m-2 text-3xl">
       <span className="m-2 align-middle text-3xl font-light">
-        /*<Icon.CartIcon size=24 />*/ React.null
+        <Icon.CartIcon size=24 />
       </span>
       {str("Selected equipment (")}
       {str(Int.to_string(count))}

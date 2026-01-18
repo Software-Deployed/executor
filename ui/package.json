@@ -13,6 +13,8 @@
   "devDependencies": {
     "@types/bun": "latest",
     "bun-plugin-tailwind": "^0.1.2",
+    "esbuild": "^0.27.2",
+    "esbuild-plugin-tailwindcss": "^2.1.0",
     "rescript-embed-lang": "^0.5.5",
     "tailwindcss": "^4.1.17"
   },

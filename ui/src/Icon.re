@@ -46,6 +46,20 @@ module SearchIcon = {
         ~strokeWidth: option(int)=?,
       ) => React.null;
 };
+
+[@platform native]
+module Calendar = {
+  [@react.component]
+  let make =
+      (
+        ~absoluteStrokeWidth: option(bool)=?,
+        ~className: option(string)=?,
+        ~color: option(string)=?,
+        ~size: option(int)=?,
+        ~strokeWidth: option(int)=?,
+      ) => React.null;
+};
+
 [@platform js]
 module Calendar = {
   [@mel.module "lucide-react"] [@react.component]
@@ -59,6 +73,19 @@ module Calendar = {
     ) =>
     React.element =
     "Calendar";
+};
+
+[@platform native]
+module Clock = {
+  [@react.component]
+  let make =
+      (
+        ~absoluteStrokeWidth: option(bool)=?,
+        ~className: option(string)=?,
+        ~color: option(string)=?,
+        ~size: option(int)=?,
+        ~strokeWidth: option(int)=?,
+      ) => React.null;
 };
 
 [@platform js]

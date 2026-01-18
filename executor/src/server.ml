@@ -95,6 +95,9 @@ let () =
           | _ ->
             Dream.close_websocket websocket));  |> Dream.get "/" handle_frontend
           *)
+
+         Dream.get "/style.css" (fun req ->
+             Dream.from_filesystem doc_root "Index.re.css" req);
          Dream.get "/" (fun _req ->
              let route_root = "/" in
              handle_frontend route_root);

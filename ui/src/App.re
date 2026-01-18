@@ -34,7 +34,7 @@ let make =
     // Cleanup function to unsubscribe when the component unmounts
     Some(() => ReasonReactRouter.unwatchUrl(watcher_id));
   });
-  <Landing />;
+  <Document> <Landing /> </Document>;
   /*let main_store = Store.getStore();
     switch (main_store.config.premise) {
     | None => <NotFound />

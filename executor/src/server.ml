@@ -34,9 +34,11 @@ let stream_react_app response_stream react_element =
   Lwt.return ()
 
 let handle_frontend route_root =
-  let%lwt index_html =
-    Lwt_io.with_file Lwt_io.Input (doc_root ^ "/ui/index.html")
+  let read_whole_file file_path =
+    Lwt_io.with_file file_path ~mode:Lwt_io.Input (fun channel ->
+      Lwt_io.read channel)
   in
+  let%lwt index_html = read_whole_file (doc_root ^ "/ui/index.html") in
   let initial_state = `Assoc [] in
   (* Build from actual state *)
   let html =

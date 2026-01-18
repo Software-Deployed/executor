@@ -80,7 +80,10 @@ let make =
             <span className="align-middle text-lg pl-14">
               "Select your reservation start time: "->str
             </span>
-            {calendar()}
+            {switch%platform (Runtime.platform) {
+             | Client => calendar()
+             | Server => React.null
+             }}
             <span className="align-middle text-lg pl-14">
               "Select your reservation end time: "->str
             </span>

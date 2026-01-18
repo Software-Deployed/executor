@@ -19,7 +19,7 @@ let render = (url: string): string => {
     };
     */
 
-  ReactDOM.renderToString(<App route_root />);
+  ReactDOM.renderToString(<App />);
 };
 /*
  Route.getMatchingPremise(route_root)

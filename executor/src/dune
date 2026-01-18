@@ -1,4 +1,5 @@
 (executable
+ (flags :standard -w -26-27)
  (name server)
  (public_name server)
  (libraries

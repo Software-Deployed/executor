@@ -23,7 +23,7 @@ let get_config premise_id =
 *)
 
 let stream_react_app response_stream react_element =
-  let stream, _abort = ReactDOM.renderToStream react_element in
+  let* stream, _abort = ReactDOM.renderToStream react_element in
   let* () =
     Lwt_stream.iter_s
       (fun chunk ->

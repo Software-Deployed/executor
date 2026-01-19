@@ -10,6 +10,7 @@
    -js
    melange.ppx
    reason-react-ppx))
+ (runtime_deps style.css)
  (libraries
   reason-react-day-picker
   common_js
@@ -25,7 +26,7 @@
   (package executor)
   (alias_rec melange)
   (:script ../build.mjs)
-  (:entrypoints app/ui/src/App.re.js)
+  (:entrypoints app/ui/src/Index.re.js)
   (:document app/ui/src/Document.re.js)
   (source_tree ../node_modules)
   (file ../package.json)

@@ -1,4 +1,12 @@
-/* [%%raw "import \"react-day-picker/style.css\""]; */
+[@platform js]
+module Style = {
+  [%%raw "import \"./style.css\""];
+};
+
+[@platform native]
+module Style = {
+  let _css = ();
+};
 
 let rootElement = ReactDOM.querySelector("#root");
 

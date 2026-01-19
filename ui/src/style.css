@@ -20,3 +20,5 @@ html {
         border-color: var(--color-gray-200, currentcolor);
     }
 }
+@import "tailwindcss";
+@source "**/*.re";

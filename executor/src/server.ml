@@ -1,6 +1,7 @@
 open Lwt.Syntax
 
-let doc_root = Sys.getenv_opt "DOC_ROOT" |> Option.value ~default:"./"
+let doc_root =
+  Sys.getenv_opt "DOC_ROOT" |> Option.value ~default:"./_build/default/ui/src/"
 
 module Config = struct
   type inventory_item = { id : string; name : string; price : float }
@@ -34,9 +35,11 @@ let stream_react_app response_stream react_element =
   Lwt.return ()
 
 let handle_frontend route_root =
+  Dream.stream ~headers:[ ("Content-Type", "text/html") ] stream_react_app (Index.createElement)
+  (*
   let read_whole_file file_path =
     Lwt_io.with_file file_path ~mode:Lwt_io.Input (fun channel ->
-      Lwt_io.read channel)
+        Lwt_io.read channel)
   in
   let%lwt index_html = read_whole_file (doc_root ^ "/ui/index.html") in
   let initial_state = `Assoc [] in
@@ -46,7 +49,7 @@ let handle_frontend route_root =
       ~initial_state
   in
   Dream.respond ~headers:[ ("Content-Type", "text/html") ] html
-
+*)
 (*let handle_config premise_id =
  let%lwt config = get_config premise_id in
   let json = Config.{
@@ -95,7 +98,6 @@ let () =
           | _ ->
             Dream.close_websocket websocket));  |> Dream.get "/" handle_frontend
           *)
-
          Dream.get "/style.css" (fun req ->
              Dream.from_filesystem doc_root "Index.re.css" req);
          Dream.get "/" (fun _req ->

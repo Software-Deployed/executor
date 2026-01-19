@@ -1,1 +1,1 @@
-module App = App;
+let handler = <Document> <App /> </Document>;

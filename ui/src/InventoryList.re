@@ -37,7 +37,10 @@ let make = (~openDate: option(Js.Date.t)=?, ~closeDate: option(Js.Date.t)=?) => 
       "Showing "
       ++ filterType
       ++ " equipment available "
-      ++ (openDate == today ? "today" : Js.Date.toLocaleDateString(openDate))
+      ++ (
+        Js.Date.toDateString(openDate) == Js.Date.toDateString(today)
+          ? "today" : Js.Date.toLocaleDateString(openDate)
+      )
     | (_, false) =>
       "Showing "
       ++ filterType

@@ -34,7 +34,7 @@ let stream_react_app response_stream react_element =
 let handle_frontend route_root =
   Dream.stream ~headers:[ ("Content-Type", "text/html") ]
     (fun response_stream ->
-      let app_element = EntryServer.App.make () in
+      let app_element = EntryServer.Document.make ~children:[EntryServer.App.make ()] () in
       stream_react_app response_stream app_element
     )
 

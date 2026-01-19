@@ -1,4 +1,5 @@
 @import "@fontsource/inter";
+@import "react-day-picker/style.css";
 
 html {
     font-family: "Inter";

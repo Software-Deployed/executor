@@ -9,7 +9,7 @@ import tailwindPlugin from "esbuild-plugin-tailwindcss";
 async function build(entryPoints, { env, output, extract, mockWebpackRequire }) {
 	const outfile = output;
 	const outdir = Path.dirname(outfile);
-	const splitting = true;
+	const splitting = false;
 
 	const bootstrapOutput = Path.join(Path.dirname(outfile), "bootstrap.js");
 

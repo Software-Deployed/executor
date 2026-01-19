@@ -37,7 +37,7 @@
    %{script}
    %{entrypoints}
    %{document}
-   --output=client
+   --output=client/dist
    --extract=true
    --env=%{env:DEMO_ENV='production'})))
 

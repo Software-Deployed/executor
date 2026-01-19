@@ -12,12 +12,9 @@ module Config = struct
   }
 end
 
-let render_app_html ~pathname ~html_placeholder ~initial_state =
-  EntryServer.render pathname
-
 (*
 let get_config premise_id =
-  let* premise = Database.Premise.get_premise premise_id in
+  let* premise = Database.Premise.get_premise premise_id in  
   let* inventory = Database.Inventory.get_list premise_id in
   let response = Config.{ inventory; premise } in
   Lwt.return response
@@ -37,9 +34,11 @@ let stream_react_app response_stream react_element =
 let handle_frontend route_root =
   Dream.stream ~headers:[ ("Content-Type", "text/html") ]
     (fun response_stream ->
-      stream_react_app response_stream (App.createElement ())
+      let app_element = EntryServer.App.make () in
+      stream_react_app response_stream app_element
     )
-  (*
+
+(*
   let read_whole_file file_path =
     Lwt_io.with_file file_path ~mode:Lwt_io.Input (fun channel ->
         Lwt_io.read channel)

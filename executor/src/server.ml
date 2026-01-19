@@ -1,7 +1,7 @@
 open Lwt.Syntax
 
 let doc_root =
-  Sys.getenv_opt "DOC_ROOT" |> Option.value ~default:"./_build/default/ui/src/"
+  Sys.getenv_opt "DOC_ROOT" |> Option.value ~default:"./_build/default/ui/src/client/"
 
 module Config = struct
   type inventory_item = { id : string; name : string; price : float }
@@ -100,6 +100,7 @@ let () =
           | _ ->
             Dream.close_websocket websocket));  |> Dream.get "/" handle_frontend
           *)
+         Dream.get "/static/**" (Dream.static doc_root);
          Dream.get "/app.js" (fun req ->
              Dream.from_filesystem doc_root "Index.re.js" req);
          Dream.get "/style.css" (fun req ->

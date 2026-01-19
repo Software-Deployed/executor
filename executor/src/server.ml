@@ -37,7 +37,7 @@ let stream_react_app response_stream react_element =
 let handle_frontend route_root =
   Dream.stream ~headers:[ ("Content-Type", "text/html") ]
     (fun response_stream ->
-      stream_react_app response_stream (Index.createElement ())
+      stream_react_app response_stream (App.createElement ())
     )
   (*
   let read_whole_file file_path =

@@ -27,6 +27,7 @@ let make =
     (~server_url: option(ReasonReactRouter.url)=?) => {
   let initial_url = ReasonReactRouter.useUrl(~serverUrl=?server_url, ());
   let (_url, set_url) = React.useState(() => initial_url);
+  Js.log(initial_url.path->Belt.List.head->Belt.Option.getWithDefault("/"));
   React.useEffect0(() => {
     let watcher_id =
       ReasonReactRouter.watchUrl(new_url => {set_url(_ => new_url)});

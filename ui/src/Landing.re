@@ -8,18 +8,14 @@ let make =
     let main_store = Store.getStore();
     let _unit = main_store.unit;
     let today =
-      switch%platform (Runtime.platform) {
-      | Server => Js.Date.make() |> Js.Date.setHours(0.0) |> Js.Date.fromFloat
-      | Client =>
-        Js.Date.make()
-        |> Js.Date.setHours(
-             ~hours=0.0,
-             ~minutes=0.0,
-             ~seconds=0.0,
-             ~milliseconds=0.0,
-           )
-        |> Js.Date.fromFloat
-      };
+      Js.Date.make()
+      |> Js.Date.setHours(
+           ~hours=0.0,
+           ~minutes=0.0,
+           ~seconds=0.0,
+           ~milliseconds=0.0,
+         )
+      |> Js.Date.fromFloat;
     let (openDate, setOpenDate) = React.useState(() => today);
     let (closeDate, setCloseDate) = React.useState(() => today);
 
